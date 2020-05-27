@@ -22,12 +22,18 @@ fn main() {
         // read_line() returns a io::Result (enumeration, Ok/Err)
 
         // Shadow previous guess variable
-        let guess: u32 = guess.trim().parse().expect("Please type in a number!");
+        let guess: u32 = match guess.trim().parse() {
+            Ok(num) => num,
+            Err(_) => continue,
+        };
 
         match guess.cmp(&number) {
             Ordering::Less => println!("Too small!"),
             Ordering::Greater => println!("Too large!"),
-            Ordering::Equal => println!("You win!"),
+            Ordering::Equal => {
+                println!("You win!");
+                break;
+            },
         }       
     }
 }
