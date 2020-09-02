@@ -3,10 +3,14 @@ use std::io;
 use std::time::SystemTime;
 use std::process;
 
+use rand::thread_rng;
+use rand::seq::SliceRandom;
 use clap::{Arg, App};
 use terminal_size::{Width, terminal_size};
+use colored::*;
 
 const DEFAULT_WIDTH: u16 = 80;
+const COLORS: [&str; 7] = ["red", "green", "green", "yellow", "blue", "magenta", "cyan"];
 
 struct Config {
     separator: String,
@@ -59,6 +63,7 @@ fn main() {
     let config = get_config();
     let separator = generate_separator(&config);
     let mut input = String::new();
+    let mut rng = thread_rng();
 
     loop {
         let last = SystemTime::now();
@@ -72,7 +77,9 @@ fn main() {
                 let elapsed = last.elapsed().unwrap().as_millis();
 
                 if elapsed > config.wait_time {
-                    println!("{}", separator);
+                    let color = COLORS.choose(&mut rng).unwrap();
+
+                    println!("{}", separator.color(*color));
                 }
 
                 print!("{}", input);
