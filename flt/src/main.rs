@@ -31,7 +31,7 @@ fn get_config() -> Config {
         .arg(Arg::with_name("wait_time")
              .short("w")
              .long("wait-time")
-             .default_value("1000")
+             .default_value("1500")
              .value_name("TIME (MS)")
              .help("Time (ms) to wait before a new log separator is printed."))
         .get_matches();
@@ -61,7 +61,7 @@ fn generate_separator(config: &Config) -> String {
 
 fn main() {
     let config = get_config();
-    let separator = generate_separator(&config);
+    let base_separator = generate_separator(&config);
     let mut input = String::new();
     let mut rng = thread_rng();
 
@@ -78,6 +78,9 @@ fn main() {
 
                 if elapsed > config.wait_time {
                     let color = COLORS.choose(&mut rng).unwrap();
+
+                    let prefix = elapsed.to_string() + "ms ";
+                    let separator = prefix.clone() + &String::from(&base_separator[prefix.len()..base_separator.len()]);
 
                     println!("{}", separator.color(*color));
                 }
